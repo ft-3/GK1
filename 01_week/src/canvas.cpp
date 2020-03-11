@@ -1,5 +1,11 @@
-#include "include/canvas.h"
+#include "canvas.h"
 #include <cmath>
+
+
+Canvas::Canvas() : state(State::DrawRectangleFull), mouse_pressed(false),
+                    rectangle(nullptr), circle(nullptr), line(nullptr) {
+    selected_color = sf::Color(255, 255, 255);
+}
 
 inline float calculate_distance(sf::Vector2f starting_position, sf::Vector2f cursor_position) {
     return std::sqrt(std::pow(std::abs(starting_position.x - cursor_position.x), 2) +
@@ -12,34 +18,32 @@ void Canvas::set_shape_size(sf::Vector2f cursor_position) {
         case DrawRectangle:
         case DrawRectangleFull:
             rectangle->setSize(cursor_position - starting_point);
+            circle = nullptr;
+            line = nullptr;
             break;
         case DrawCircle:
             circle->setRadius(calculate_distance(starting_point, cursor_position));
+            rectangle = nullptr;
+            line = nullptr;
             break;
         default:
             break;
     }
-
 }
 
 
 void Canvas::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    sf::Vertex line[] = {
-        sf::Vertex(sf::Vector2f(10.f, 10.f)),
-        sf::Vertex(sf::Vector2f(150.f, 150.f))
-    };
-    circle->setFillColor(sf::Color::Transparent);
-    circle->setOutlineThickness(5.f);
-    circle->setOutlineColor(sf::Color(155, 144, 133));
-
-    target.draw(line, 2, sf::Lines);
+    if (circle)
+        target.draw(*circle);
+    if (rectangle)
+        target.draw(*rectangle);
 }
 
 // TODO: Save the current window in a buffer MAYBE DONE
-void Canvas::mouse_press(sf::RenderWindow window, sf::Vector2f starting_position) {
+void Canvas::mouse_press(sf::Event::MouseButtonEvent event) {
     mouse_pressed = true;
-    starting_point = starting_position;
-    current_view = window.getView();
+    //mouse_pressed = !mouse_pressed;
+    starting_point = sf::Vector2f(event.x, event.y);
     switch (state) {
         case DrawLine:
             break;
@@ -70,10 +74,7 @@ void Canvas::mouse_press(sf::RenderWindow window, sf::Vector2f starting_position
     }
 }
 
-void Canvas::draw_shape(sf::RenderWindow window, sf::Event::MouseMoveEvent event) {
-   window.setView(current_view); 
-   sf::Vector2f pos(event.mouseMove.x, event.MouseMove.y);
+void Canvas::draw_shape(sf::Event::MouseMoveEvent event) {
+   sf::Vector2f pos(event.x, event.y);
    set_shape_size(pos);
-   window.draw(shape);
-
 }

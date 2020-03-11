@@ -1,7 +1,13 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include "include/menu.h"
-#include "include/canvas.h"
+
+#include "menu.h"
+#include "canvas.h"
+
+//#include "include/menu.h"
+//#include "include/canvas.h"
+
+#include <iostream>
 
 int main()
 {
@@ -13,7 +19,7 @@ int main()
 
     window.setFramerateLimit(60);
     window.setKeyRepeatEnabled(false);
-
+    
     while (window.isOpen())
     {
         window.clear(sf::Color::Black);
@@ -64,24 +70,21 @@ int main()
                     }
                 break;
             case sf::Event::MouseButtonPressed:
-                // TODO: switch to if
-                switch (event.mouseButton.button) {
-                    case sf::Mouse::Left:
-                        if (!canvas.is_mouse_pressed())
-                            canvas.mouse_press(window, 
-                                    sf::Vector2f(event.mouseButton.x,
-                                            event.mouseButton.y));
-
-                        break;
-                    default:
-                        break;
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (!canvas.is_mouse_pressed()) {
+                        canvas.set_view(window.getView());
+                        canvas.mouse_press(event.mouseButton);
+                    }
                 }
                 break;
             case sf::Event::MouseMoved:
-                if (canvas.is_mouse_pressed())
-                    canvas.draw_shape(window, event.mouseMove)
+                if (canvas.is_mouse_pressed()) {
+                    window.setView(canvas.get_view());
+                    canvas.draw_shape(event.mouseMove);
+                }
             case sf::Event::MouseButtonReleased:
-                        break;
+                canvas.stop_drawing();
+                break;
 
             default:
                 break;
