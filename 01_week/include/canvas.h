@@ -2,36 +2,45 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <deque>
 
 enum State {
-    None, ForegroundChoice, BackgroundChoice, DrawLine, DrawRectangle,
+    ForegroundChoice, BackgroundChoice, DrawLine, DrawRectangle,
     DrawRectangleFull, DrawCircle, WriteFile, ReadFile
 };
 
 class Canvas : public sf::Drawable {
     private:
+        std::deque<sf::Shape*> shapes;
+        std::deque<std::array<sf::Vertex, 2>> lines;
         State state; // Currently pressed keyboard key choice
-        bool mouse_pressed; // Flag that allows to draw
-        sf::Vector2f starting_point; // The place where the mouse was pressed
+        sf::Vector2f start_position; // The place where the mouse was pressed
 
-        sf::RectangleShape* rectangle; // The shape that will be drawn
-        sf::CircleShape* circle; // The shape that will be drawn
-        sf::Vertex* line;
+        sf::Color selected_color_fill;
+        sf::Color selected_color_outline;
 
-        sf::Color selected_color;
-
-        // Variable in which the current screen is saved when drawing a new shape
-        sf::View current_view;
         void set_shape_size(sf::Vector2f cursor_position);
 
     public:
+        bool draw_flag; // Flag that allows to draw
+        bool choose_color_flag;
         Canvas();
-        inline void set_state(State new_state) { state = new_state; }
-        inline void set_view(sf::View view) { current_view = view; }
-        inline void stop_drawing() { mouse_pressed = false; }
-        inline sf::View get_view() { return current_view; }
-        inline bool is_mouse_pressed() { return mouse_pressed; }
-        void mouse_press(sf::Event::MouseButtonEvent);
+        inline void set_state(State new_state) {
+            state = new_state;
+        }
+        inline void stop_drawing() {
+            draw_flag = false;
+        }
+        inline bool is_draw_flag() {
+            return draw_flag;
+        }
+        inline bool is_choose_color_flag() {
+            return choose_color_flag;
+        }
+        void start_draw(sf::Event::MouseButtonEvent);
         void draw_shape(sf::Event::MouseMoveEvent);
         virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+        void choose_color(sf::Event::MouseButtonEvent);
 };
+
+inline float calculate_distance(sf::Vector2f starting_position, sf::Vector2f cursor_position);

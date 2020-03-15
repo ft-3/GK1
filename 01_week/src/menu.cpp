@@ -12,7 +12,7 @@ Menu::Menu() {
     rectangle->setFillColor(sf::Color::Transparent);
     rectangle->setOutlineColor(sf::Color::White);
     rectangle->setOutlineThickness(1.0f);
-    rectangle->setPosition(2, 62);
+    rectangle->setPosition(0, 62);
 
     unsigned int x, y;
     colors_pixels = new sf::Uint8[colors_size_x * colors_size_y * 4];
@@ -32,7 +32,7 @@ Menu::Menu() {
 
     colors_sprite = new sf::Sprite();
     colors_sprite->setTexture(*colors_texture);
-    colors_sprite->setPosition(1, 1);
+    colors_sprite->setPosition(0, 0);
 }
 
 void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const {

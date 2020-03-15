@@ -3,11 +3,8 @@
 
 #include "menu.h"
 #include "canvas.h"
-
-//#include "include/menu.h"
-//#include "include/canvas.h"
-
 #include <iostream>
+
 
 int main()
 {
@@ -33,34 +30,38 @@ int main()
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::F:
-                        menu.outtextxy(window,600, 600, L"F");
                         canvas.set_state(State::ForegroundChoice);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = true;
                         break;
                     case sf::Keyboard::B:
-                        menu.outtextxy(window,600, 600, L"B");
                         canvas.set_state(State::BackgroundChoice);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = true;
                         break;
                     case sf::Keyboard::L:
-                        menu.outtextxy(window,600, 600, L"L");
                         canvas.set_state(State::DrawLine);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = false;
                         break;
                     case sf::Keyboard::R:
-                        menu.outtextxy(window,600, 600, L"R");
                         canvas.set_state(State::DrawRectangle);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = false;
                         break;
                     case sf::Keyboard::A:
-                        menu.outtextxy(window,600, 600, L"A");
                         canvas.set_state(State::DrawRectangleFull);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = false;
                         break;
                     case sf::Keyboard::C:
-                        menu.outtextxy(window,600, 600, L"C");
                         canvas.set_state(State::DrawCircle);
+                        canvas.draw_flag = false;
+                        canvas.choose_color_flag = false;
                         break;
                     case sf::Keyboard::W:
-                        menu.outtextxy(window,600, 600, L"W");
                         break;
                     case sf::Keyboard::O:
-                        menu.outtextxy(window,600, 600, L"O");
                         break;
                     case sf::Keyboard::Escape:
                         window.close();
@@ -71,17 +72,19 @@ int main()
                 break;
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (!canvas.is_mouse_pressed()) {
-                        canvas.set_view(window.getView());
-                        canvas.mouse_press(event.mouseButton);
+                    if (!canvas.draw_flag && !canvas.choose_color_flag) {
+                        canvas.start_draw(event.mouseButton);
+                    }
+                    else if (canvas.choose_color_flag) {
+                        canvas.choose_color(event.mouseButton);
                     }
                 }
                 break;
             case sf::Event::MouseMoved:
-                if (canvas.is_mouse_pressed()) {
-                    window.setView(canvas.get_view());
+                if (canvas.is_draw_flag()) {
                     canvas.draw_shape(event.mouseMove);
                 }
+                break;
             case sf::Event::MouseButtonReleased:
                 canvas.stop_drawing();
                 break;
@@ -95,7 +98,6 @@ int main()
    window.draw(menu);
    window.draw(canvas);
    window.display();
-
    //Draw END
   }
  return 0;
