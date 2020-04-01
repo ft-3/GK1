@@ -18,12 +18,13 @@ private:
     std::tuple<Vector, Vector> line2d(Matrix t, double, double, double, double);
     void draw_line(wxDC *dc, std::tuple<Vector, Vector>);
     void draw_axis(wxDC *dc, Matrix t);
-    Matrix SetTranslation(double, double);
-    Matrix SetRotation(double);
-    Matrix SetScale();
+
+    Matrix set_translation(double, double);
+    Matrix set_rotation(double);
+    Matrix set_scale();
    
 public:
-    ChartClass(std::shared_ptr<ConfigClass> c, int w = 600, int h = 400);
+    ChartClass(std::shared_ptr<ConfigClass> c);
     void Set_Range();   // ustala wartosci zmiennych x_min,y_min,x_max,y_max
     double Get_Y_min(); // zwraca y_min
     double Get_Y_max(); // zwraca y_max
