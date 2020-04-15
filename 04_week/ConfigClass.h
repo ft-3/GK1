@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __ConfigClass__
+#define __ConfigClass__
 
 #include "GUIMyFrame1.h"
 
@@ -40,3 +41,5 @@ class ConfigClass
         void Save(char *filename);
         void Load(char *filename);
 };
+
+#endif

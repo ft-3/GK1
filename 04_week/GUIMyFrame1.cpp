@@ -177,9 +177,9 @@ void GUIMyFrame1::Repaint()
  wxClientDC dc1(WxPanel);
  wxBufferedDC dc(&dc1);
 
+ ChartClass MyChart(cfg);
  int w, h;
  WxPanel->GetSize(&w, &h);
- ChartClass MyChart(cfg);
  MyChart.Draw(&dc, w, h);
 }
 
